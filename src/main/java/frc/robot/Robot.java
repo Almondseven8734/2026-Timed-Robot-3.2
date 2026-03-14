@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
   private final Timer spinUpTimer = new Timer();
 
   private static final double LEDBlinkingRate = 2; // two second blinking rate for arcade drive
-  private static final int LEDBrightness = 30; // in percent
+  private static final int LEDBrightness = 70;// in percent
 
   private final LEDPattern red = LEDPattern.solid(Color.kGreen)
       .atBrightness(Dimensionless.ofRelativeUnits(LEDBrightness, Percent)); // green red invert, used for launch default
@@ -339,7 +339,7 @@ public class Robot extends TimedRobot {
     }
 
     // ---------------------------------Fuel Mechanism...Fuel Operator----------------------------------------
-    if (driverController.getYButton()) { // stop them from doing things that they shouldn't
+  //if (driverController.getYButton()) { // stop them from doing things that they shouldn't
       if (opController.getRightBumperButton()) { // press Right Bumper to launch fuel
         if (opController.getRightBumperButtonPressed()) {
           spinUpTimer.reset();
@@ -361,10 +361,10 @@ public class Robot extends TimedRobot {
         leftIntakeShootExpel.setVoltage(0);
         rightBinIntakeExpel.setVoltage(0);
       }
-    } else {
-      leftIntakeShootExpel.setVoltage(0);
-      rightBinIntakeExpel.setVoltage(0);
-    }
+  //} else {
+   // leftIntakeShootExpel.setVoltage(0);
+   // rightBinIntakeExpel.setVoltage(0);
+   //
   }
 
   /** This function is called once when the robot is disabled. */
