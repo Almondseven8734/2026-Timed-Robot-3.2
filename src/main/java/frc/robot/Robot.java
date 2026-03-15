@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
   private final Timer autoTimer = new Timer();
   private final Timer spinUpTimer = new Timer();
 
-  private static final double LEDBlinkingRate = 2; // two second blinking rate for arcade drive
+  private static final double LEDBlinkingRate = 1; // two second blinking rate for arcade drive in disabled
   private static final int LEDBrightness = 70;// in percent
 
   private final LEDPattern red = LEDPattern.solid(Color.kGreen)
@@ -70,17 +70,15 @@ public class Robot extends TimedRobot {
   private final LEDPattern blue = LEDPattern.solid(Color.kBlue)
       .atBrightness(Dimensionless.ofRelativeUnits(LEDBrightness, Percent)); // green red invert, used for launch right
   private final LEDPattern purple = LEDPattern.solid(Color.kCyan)
-      .atBrightness(Dimensionless.ofRelativeUnits(LEDBrightness, Percent)); // green red invert, used for launch either
-                                                                            // side
-  private final LEDPattern scrollRainbow = LEDPattern.rainbow(255, 128)
-      .scrollAtRelativeSpeed(Percent.per(Second).of(25))
-      .atBrightness(Dimensionless.ofRelativeUnits(LEDBrightness, Percent)); // green red invert, used for teleop
+      .atBrightness(Dimensionless.ofRelativeUnits(LEDBrightness, Percent)); // green red invert, used for launch either side
+  private final LEDPattern scrollTeleOp = LEDPattern.gradient(GradientType.kDiscontinuous, Color.kBlue, Color.kYellow)
+      .scrollAtRelativeSpeed(Percent.per(Second).of(50))
+      .atBrightness(Dimensionless.ofRelativeUnits(LEDBrightness, Percent)); // used for teleop
 
   private final LEDPattern redBlink = red.blink(Seconds.of(LEDBlinkingRate));
   private final LEDPattern greenBlink = green.blink(Seconds.of(LEDBlinkingRate));
   private final LEDPattern blueBlink = blue.blink(Seconds.of(LEDBlinkingRate));
   private final LEDPattern purpleBlink = purple.blink(Seconds.of(LEDBlinkingRate));
-  private final LEDPattern scrollRainbowBlink = scrollRainbow.blink(Seconds.of(LEDBlinkingRate));
 
   private AddressableLEDBuffer m_ledBuffer;
   private AddressableLED m_led;
@@ -101,7 +99,7 @@ public class Robot extends TimedRobot {
   private static final double SPINUP_Left_Voltage = 1;
   private static final double SPINUP_Right_Voltage = -6;
   private static final double SPINUP_Seconds = 1;
-  private static final double SHOOT_Seconds = 5; // this is includes the SPINUP time for an actual (SHOOT minus SPINUP) seconds
+  private static final double SHOOT_Seconds = 11; // this is includes the SPINUP time for an actual (SHOOT minus SPINUP) seconds
 
   // -----------------------drive speed parameters--------------------------------------------------------
   private double driveSpeed = 1;
@@ -130,7 +128,7 @@ public class Robot extends TimedRobot {
     // PWM port 1
     // Must be a PWM header, not MXP or DIO, the LED strip that we use has a grb
     // setup and not a rgb setup, so flip green and red values
-    m_led = new AddressableLED(1);
+    m_led = new AddressableLED(0);
 
     // Reuse buffer
     // Default to a length of 92, start empty output
@@ -297,7 +295,7 @@ public class Robot extends TimedRobot {
           rightBinIntakeExpel.setVoltage(LAUNCHING_Right_Voltage);
           myDrive.tankDrive(.0, .0);
         } else {
-          leftIntakeShootExpel.setVoltage(12);
+          leftIntakeShootExpel.setVoltage(0);
           rightBinIntakeExpel.setVoltage(0);
           myDrive.tankDrive(0, 0);
         }
@@ -317,11 +315,7 @@ public class Robot extends TimedRobot {
   /* This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (m_autoSelected == kControllerArcade) {
-      scrollRainbowBlink.applyTo(m_ledBuffer);
-    } else {
-      scrollRainbow.applyTo(m_ledBuffer);
-    }
+    scrollTeleOp.applyTo(m_ledBuffer);
     m_led.setData(m_ledBuffer);
     // ---------------------------------Drive Mechanisme...Driver...............................................
     if (driverController.getLeftBumperButton()) { // slow mode
